@@ -288,7 +288,7 @@ function InvenioFilesUploaderModel($rootScope, $q, InvenioFilesAPI) {
 
   Uploader.prototype._prepareRequest = function(file, method) {
     var args = angular.copy(this.args);
-    args.url = args.url + '/' + file.name;
+    args.url = args.url + '/' + file.key;
     args.method = method || 'POST';
     args.headers['Content-Type'] = file.type;
     return args;
