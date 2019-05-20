@@ -294,8 +294,7 @@ function InvenioFilesUploaderModel($rootScope, $q, InvenioFilesAPI) {
     var args = angular.copy(this.args);
     args.url = args.url + '/' + file.key;
     args.method = method || 'POST';
-    args.headers['Content-Type'] = (file.type || '').indexOf('/') > -1 ?
-      file.type : '';
+    args.headers['Content-Type'] = 'application/octet-stream';
     return args;
   };
 

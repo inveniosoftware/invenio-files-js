@@ -24,7 +24,7 @@
 var gulp = require('gulp');
 var del = require('del');
 var fs = require('fs');
-var Server = require('karma').Server;
+var KarmaServer = require('karma').Server;
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
 
@@ -43,7 +43,7 @@ var sourceFiles = [
   path.join(sourceDirectory, '/*.js'),
 
   // Then add all JavaScript files
-  path.join(sourceDirectory, '/**/*.js')
+  path.join(sourceDirectory, '/**/*.js'),
 ];
 
 var templates = [path.join(sourceDirectory, '/**/templates/**/*.html')];
@@ -119,7 +119,7 @@ gulp.task('test.jshint', function() {
 
 // test sources
 gulp.task('test.src', function(done) {
-  new Server(
+  new KarmaServer(
     {
       configFile: __dirname + '/karma-src.conf.js',
       singleRun: true

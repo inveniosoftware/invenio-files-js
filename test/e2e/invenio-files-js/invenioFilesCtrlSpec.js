@@ -39,28 +39,24 @@ describe('Unit: testing the module', function() {
     {
       name: 'dare_devil.pdf',
       size: 900000,
-      type: 'application/pdf',
       lastModified: 1464785035000,
       lastModifiedDate: '2016-06-01T12:43:55.000Z'
     },
     {
       name: 'jessica_jones.pdf',
       size: 9999999999999999,
-      type: 'application/pdf',
       lastModified: 1464785035000,
       lastModifiedDate: '2016-06-01T12:43:55.000Z'
     },
     {
       name: 'the_punisher.pdf',
       size: 9999999999,
-      type: 'application/pdf',
       lastModified: 1464785035000,
       lastModifiedDate: '2016-06-01T12:43:55.000Z'
     },
     {
       name: 'harley_quinn.pdf',
       size: 9,
-      type: 'application/pdf',
       lastModified: 1464785035000,
       lastModifiedDate: '2016-06-01T12:43:55.000Z'
     }
@@ -171,6 +167,39 @@ describe('Unit: testing the module', function() {
     expect(template.find('.sel-file').eq(2).find('td').eq(1).text()).to.be.equal('9094.9 Tb');
     expect(template.find('.sel-file').eq(3).find('td').eq(1).text()).to.be.equal('9.3 Gb');
     expect(template.find('.sel-file').eq(4).find('td').eq(1).text()).to.be.equal('9 B');
+  });
+
+  it('should set the Content-Type of the request to application/octet-stream', function() {
+    // What request to expect: ensure header is "application/octet-stream"
+    var ignoreBody = function(data) {
+      // do not check body
+      return true;
+    }
+    var expectContentTypeHeader = function(headers) {
+      // return true if expected Content-Type header
+      return headers['Content-Type'] === 'application/octet-stream';
+    };
+    $httpBackend
+      .expectPUT('/api/bucket_id/dare_devil.pdf', ignoreBody, expectContentTypeHeader)
+      .respond(200, _smallFileResponse);
+
+    // prepare directive with one file upload
+    directiveTemplate('bucket="/api/bucket_id"');
+    scope.$broadcast('invenio.records.endpoints.updated', _links.links);
+    scope.$digest();
+
+    // try to set headers to something not "application/octet-stream"
+    var _headers = {
+      'Content-Type': 'application/json',
+      fight: 'Jessica Jones v. Harley Quinn'
+    };
+    expect(scope.filesVM.invenioFilesArgs.headers).to.deep.equal(_headers);
+
+    // trigger upload
+    uploadFiles();
+    scope.$digest();
+    $httpBackend.flush();
+    scope.$digest();
   });
 
   it('should initialize the uploader with event', function() {
