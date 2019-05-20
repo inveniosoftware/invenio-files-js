@@ -24,10 +24,9 @@
 var gulp = require('gulp');
 var del = require('del');
 var fs = require('fs');
-var karma = require('karma').server;
+var Server = require('karma').Server;
 var path = require('path');
 var plugins = require('gulp-load-plugins')();
-var runSequence = require('run-sequence');
 
 /**
  * File patterns
@@ -40,22 +39,18 @@ var rootDirectory = path.resolve('./');
 var sourceDirectory = path.join(rootDirectory, './src');
 
 var sourceFiles = [
-
   // Make sure module files are handled first
   path.join(sourceDirectory, '/*.js'),
 
   // Then add all JavaScript files
-  path.join(sourceDirectory, '/**/*.js'),
-
+  path.join(sourceDirectory, '/**/*.js')
 ];
 
-var templates = [
-  path.join(sourceDirectory, '/**/templates/**/*.html')
-];
+var templates = [path.join(sourceDirectory, '/**/templates/**/*.html')];
 
 // Get licenses
 var licences = {
-  'javascript': fs.readFileSync(path.join(rootDirectory, '.license'), 'utf8')
+  javascript: fs.readFileSync(path.join(rootDirectory, '.license'), 'utf8')
 };
 
 var lintFiles = [
@@ -65,19 +60,22 @@ var lintFiles = [
 ].concat(sourceFiles);
 
 /**
+ * Clean tasks
+ */
+
+// Clean build directory if exists
+gulp.task('clean.build', function() {
+  return del(['build']);
+});
+
+/**
  * Build
  */
 
-// run all the build tasks
-gulp.task('build', ['clean.build'], function (done) {
-  runSequence(
-    'build.src', 'build.templates', done
-  );
-});
-
 // build the javascript files
 gulp.task('build.src', function() {
-  gulp.src(sourceFiles)
+  gulp
+    .src(sourceFiles)
     .pipe(plugins.plumber())
     .pipe(plugins.concat('invenio-files-js.js'))
     .pipe(plugins.stripComments())
@@ -91,23 +89,28 @@ gulp.task('build.src', function() {
 
 // move the templates to dist
 gulp.task('build.templates', function() {
-  gulp.src(templates)
+  gulp
+    .src(templates)
     .pipe(plugins.flatten())
     .pipe(gulp.dest('./dist/templates'));
 });
+
+// run all the build tasks
+gulp.task(
+  'build',
+  gulp.series('clean.build', 'build.src', 'build.templates', function(done) {
+    done();
+  })
+);
 
 /**
  * Tests
  */
 
-// Run test once and exit
-gulp.task('test', function (done) {
-  runSequence('test.jshint', 'test.src', done);
-});
-
 // check jshint
-gulp.task('test.jshint', function () {
-  return gulp.src(lintFiles)
+gulp.task('test.jshint', function() {
+  return gulp
+    .src(lintFiles)
     .pipe(plugins.plumber())
     .pipe(plugins.jshint())
     .pipe(plugins.jshint.reporter('jshint-stylish'))
@@ -115,19 +118,28 @@ gulp.task('test.jshint', function () {
 });
 
 // test sources
-gulp.task('test.src', function (done) {
-  karma.start({
-    configFile: __dirname + '/karma-src.conf.js',
-    singleRun: true
-  }, done);
+gulp.task('test.src', function(done) {
+  new Server(
+    {
+      configFile: __dirname + '/karma-src.conf.js',
+      singleRun: true
+    },
+    done
+  ).start();
 });
 
 // coveralls
-gulp.task('coveralls', function () {
-  return gulp.src('coverage/**/lcov.info')
-    .pipe(plugins.coveralls());
+gulp.task('coveralls', function() {
+  return gulp.src('coverage/**/lcov.info').pipe(plugins.coveralls());
 });
 
+// Run test once and exit
+gulp.task(
+  'test',
+  gulp.series('test.jshint', 'test.src', function(done) {
+    done();
+  })
+);
 
 /**
  * Demo
@@ -135,40 +147,38 @@ gulp.task('coveralls', function () {
 
 // run the demo
 gulp.task('demo.run', function() {
-  gulp.src(rootDirectory)
-    .pipe(plugins.webserver({
+  gulp.src(rootDirectory).pipe(
+    plugins.webserver({
       livereload: true,
       open: '/examples/index.html'
-  }));
+    })
+  );
 });
 
 // run build and then the demo
-gulp.task('demo', function(done) {
-  runSequence('build', 'demo.run', done);
-});
-
-/**
- * Clean tasks
- */
-
-// Clean build directory if exists
-gulp.task('clean.build', function() {
-  return del(['build']);
-});
+gulp.task(
+  'demo',
+  gulp.series('build', 'demo.run', function(done) {
+    done();
+  })
+);
 
 /**
  * Watch
  */
 
-gulp.task('watch', function () {
+gulp.task('watch', function() {
   // Watch JavaScript files
   gulp.watch(sourceFiles, ['test']);
 });
 
 /**
- * Default taks
+ * Default tasks
  */
 
-gulp.task('default', function () {
-  runSequence('test', 'watch');
-});
+gulp.task(
+  'default',
+  gulp.series('test', 'watch', function(done) {
+    done();
+  })
+);
