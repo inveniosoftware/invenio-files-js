@@ -62,7 +62,10 @@ function InvenioFilesUploaderModel($rootScope, $q, InvenioFilesAPI) {
   };
 
   Uploader.prototype.removeFromQueueIndex = function(file) {
-    this.queue.splice(_.indexOf(this.queue, file), 1);
+    index = _.indexOf(this.queue, file)
+    if(index > -1){
+      this.queue.splice(index, 1);
+    }
     $rootScope.$emit('invenio.uploader.upload.file.removed');
   };
 

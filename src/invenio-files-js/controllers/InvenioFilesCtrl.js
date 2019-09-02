@@ -234,6 +234,27 @@ function InvenioFilesCtrl($rootScope, $scope, $q, $timeout,
         Uploader.pushToQueue(file);
       }
     });
+    if(vm.invenioFilesArgs.autoStartUpload && vm.hasQueuedUploads()){
+      vm.upload()
+    }
+  }
+
+  /**
+  * Check if there are files queued for uploading and there is no active 
+  * upload
+  * @memberof InvenioFilesCtrl
+  * @function hasQueuedUploads
+  */
+  function hasQueuedUploads() {
+    runUpload = false
+    if(!vm.invenioFilesBusy){
+      angular.forEach(vm.files, function(file) {
+        if(file.completed !== true && file.errored === undefined){
+          runUpload = true;
+        }
+      });
+    }
+    return runUpload
   }
 
   /**
@@ -355,6 +376,9 @@ function InvenioFilesCtrl($rootScope, $scope, $q, $timeout,
   function invenioUploaderCompleted() {
     $timeout(function() {
       vm.invenioFilesBusy = false;
+      if(vm.invenioFilesArgs.autoStartUpload && vm.hasQueuedUploads()){
+        vm.upload()
+      }
     }, 10);
   }
 
@@ -421,6 +445,8 @@ function InvenioFilesCtrl($rootScope, $scope, $q, $timeout,
   vm.remove = removeFile;
   // Start the upload
   vm.upload = upload;
+  // Check if there are files queued for uploading
+  vm.hasQueuedUploads = hasQueuedUploads;
 
   ////////////
 
