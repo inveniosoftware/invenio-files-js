@@ -6,6 +6,9 @@
 .project
 .settings
 
+# Output of 'npm pack'
+*.tgz
+
 # Ignore node stuff
 node_modules/
 npm-debug.log
