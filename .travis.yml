@@ -58,7 +58,7 @@ deploy:
   email: info@inveniosoftware.org
   api_key:
     secure: hTUzT3R3noHmOgaxIQ0+NxIk0cEbWWBxlsUs3d/h3vgvh5iK7EFtelPmY5WG+umx8NaiPX/CsWixqtIaEP3DYPGXNRErBfbB/Rq9O6KB2N4u+sisujkbOKky9didshipQKEM7+Wete+2gW1h2RL+xWasKvTnvQ6lZdTmeo7vfn6BD9K1+036qPPiBZqwBtSc+qi11Ex0nG9PDlhQ2EVyV7OlqnSi6T/F14HfH9w+bL6vPB+qj7BNSLxcPsDaEXBaU44TeaMW5Ntx6H8iX2753eqQO4eBKcqCi+L+oLo3kGjASi4g+mYjfVWkVaeqEfqua4khuJEWafX/6HmmlSpc4hZnerp6iDfnz6qqmXXnf6vocoJrkdWzEDqcDmiUL5UdRdcXZX66KWeKsI6/jIBesy1vsfq7gOd0QqfsvI4Ix8KGR9p85+JUKmwNDZREnclNwvUeyvncf8K3kIbh2G7FoZVuYsNqCGNfOu0l0dMmderDa1Wbugbj5tdILHL6sFub2X7WJhtLPrd5lU39D7y/Z6IGGIyvlKU9l+Hp3hj3wCkc7MVZbz5pE5R2kbCvekAMa8oBM7ZxR3MoR1nWspBDhNR0xvIvLQM/3s9vV0HU5VF4vbU0wR/XaHJa4B02BQMK75LV19rFwtxbCdKVcncyeTd0TnLxIbuaZlFzcKaVSnE=
-  true:
+  on:
     tags: true
     repo: inveniosoftware/invenio-files-js
     branch: master
