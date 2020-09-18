@@ -62,7 +62,6 @@ deploy:
     tags: true
     repo: 'inveniosoftware/invenio-files-js'
     branch: master
-    node: '5.4.1'
 
 after_deploy:
   - ./deploy.sh
