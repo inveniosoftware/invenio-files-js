@@ -74,7 +74,7 @@ gulp.task('clean.build', function() {
 
 // build the javascript files
 gulp.task('build.src', function() {
-  gulp
+  return gulp
     .src(sourceFiles)
     .pipe(plugins.plumber())
     .pipe(plugins.concat('invenio-files-js.js'))
@@ -89,7 +89,7 @@ gulp.task('build.src', function() {
 
 // move the templates to dist
 gulp.task('build.templates', function() {
-  gulp
+  return gulp
     .src(templates)
     .pipe(plugins.flatten())
     .pipe(gulp.dest('./dist/templates'));
