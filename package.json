@@ -1,5 +1,5 @@
 {
-  "name": "invenio-files-js",
+  "name": "@inveniosoftware/invenio-files-js",
   "version": "0.0.6",
   "description": "Invenio JS for uploading files",
   "author": {
