@@ -73,5 +73,5 @@
     "docs": "jsdoc  -c .jsdoc --pedantic src/",
     "test": "gulp test"
   },
-  "license": "GPLv2"
+  "license": "MIT"
 }
